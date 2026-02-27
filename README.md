@@ -1,6 +1,7 @@
 ## NcatPortable
 Statically compiled, compressed, and self-signed Win32 `ncat.exe` for maximum portability.
 
+**Latest release information below:**
 | Resource | Version |
 | --- | --- |
 | Visual Studio | `Visual Studio 2026 Community Edition (February 2026 Update)` |
@@ -8,7 +9,7 @@ Statically compiled, compressed, and self-signed Win32 `ncat.exe` for maximum po
 | OpenSSL | `v.3.6.1` |
 
 
-## Instructions
+## Compilation Instructions
 
 Below you will find my approach and streamlined information, but if you want a more verbose wiki you can find the official instructions here: https://secwiki.org/w/Nmap/Ncat_Portable.
 
@@ -141,4 +142,6 @@ upx -9 ncat.exe
 ./self-signer.sh ncat.exe
 ```
 <img width="1027" height="584" alt="image" src="https://github.com/user-attachments/assets/09e83602-ea96-4fce-8295-24e30ae22672" />
+<img width="859" height="592" alt="image" src="https://github.com/user-attachments/assets/125d4fac-ef53-461e-a048-579970362dcd" />
+
 
