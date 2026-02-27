@@ -14,7 +14,6 @@ PFX_FILE="certificate.pfx"
 TIMESTAMP_SERVER="http://timestamp.digicert.com"
 
 EXECUTABLE_TO_SIGN=$1
-#SIGNED_EXECUTABLE="${EXECUTABLE_TO_SIGN%.*}_signed.${EXECUTABLE_TO_SIGN##*.}"
 TEMP_SIGNED_FILE=$(mktemp)
 
 # Define colors
@@ -78,12 +77,12 @@ sign_executable() {
     fi
 }
 
-# Cleanup Artifacts
+
+# Function to cleanup remaining artifacts
 cleanup() {
     echo "${yellow}[!] Cleaning up artifacts...${white}"
     echo " o  Original file overwritten with the signed version."
     mv "$TEMP_SIGNED_FILE" "$EXECUTABLE_TO_SIGN"
-    
     echo " o  Temporary certificate files removed."
     rm "$PRIVATE_KEY" "$CERTIFICATE" "$PFX_FILE"
 }
