@@ -16,30 +16,32 @@ Below you will find my approach and streamlined information, but if you want a m
 📁**Directory Structure:**
 ```
 NcatPortable
+|
 |__ nmap
 |   |__ <extracted_source_code>
 |
 |__ nmap-mswin32-aux
 |   |__ OpenSSL
+|       |__ <compilation_location>
 |
 |__ openssl
 |   |__ <extracted_source_code>
 |
 |__ nmap-x.xx.tar.bz2     # Latest Release
 |__ openssl-x.x.x.tar.gz  # Latest Release
-|__ self-signer.sh
+|__ self-signer.sh        # Custom Self-Signing Script
 ```
 
 _(Note: I use both Visual Studio and WSL for this process)_
 
 ---
 
-#### **1. Download latest source code archives of OpenSSL and Nmap (or use the ones in this repository).**
+#### **1. Download Latest Source Code Archives of OpenSSL and Nmap (or use the ones in this repository)**
 - Nmap: https://nmap.org/download.html#source
 - OpenSSL: https://github.com/openssl/openssl/releases/latest
 
 
-#### **2. Download Windows dependencies via 'Winget'.**
+#### **2. Download Windows Dependencies (PowerShell)**
 ```powershell
 ### Terminal 1 ###
 
@@ -49,13 +51,13 @@ winget install NASM.NASM
 
 ### Terminal 2 (after above install) ###
 
-# Install Required Perl Modules
+# Install required Perl module(s)
 cpan -i Text::Template
 cpan -i Text::More
 ```
 
 
-#### **3. Expand source code archives & build directory structure via 'WSL'.**
+#### **3. Expand Source Code Archives & Build Directory Structure (WSL)**
 ```shell
 # Install WSL dependencies
 sudo apt install bzip2 upx osslsigncode -y
@@ -71,7 +73,7 @@ mv openssl-3.6.1 openssl
 ```
 
 
-#### **4. Compile OpenSSL via 'x86 Native Tools Command Prompt for VS'.**
+#### **4. Compile OpenSSL (x86 Native Tools Command Prompt for VS)**
 ```cmd
 :: Validate NASM and Perl are in path 
 perl --version
@@ -86,15 +88,15 @@ perl Configure --prefix=%OUTDIR% enable-weak-ssl-ciphers enable-ssl3 enable-ssl3
 perl -pi -e "s|/debug|/NXCOMPAT /DYNAMICBASE /SAFESEH| if /^LDFLAGS/" makefile
 nmake -f makefile install_dev
 
-:: After Successful Compilation
+:: After successful compilation
 copy ms\applink.c %OUTDIR%\include\openssl\applink.c
 ```
 <img width="1316" height="1090" alt="image" src="https://github.com/user-attachments/assets/b05b2a1d-11aa-4dec-b67e-d0388646f91f" />
 
 
-#### **5. Configure & statically compile 'ncat.exe' via 'Visual Studio'.**
+#### **5. Configure & Statically Compile 'ncat.exe' (Visual Studio)**
 ```
-> Open nmap solution file (nmap/mswin32/nmap.sln)
+> Open Nmap solution file (location: "nmap/mswin32/nmap.sln")
 > Retarget each Project to latest Platform Toolset 
 
 
@@ -124,21 +126,23 @@ copy ms\applink.c %OUTDIR%\include\openssl\applink.c
 --> Click "Apply" and "OK" to exit "Properties"
 
 
-> Right click the "ncat" solution --> "Set as Startup Project"
+> Right click on "ncat" solution --> "Set as Startup Project"
 > Right click on "nbase" solution --> "Build"
 > Right click on "nsock" solution --> "Build"
-> Right click the "ncat" solution --> "Build"
---> Output: "nmap/ncat/Release/ncat.exe"
+> Right click on "ncat" solution --> "Build"
+
+
+> Output: "nmap/ncat/Release/ncat.exe"
 ```
 
 
-#### **6. Compress & self-sign 'ncat.exe' binary via 'WSL'.**
+#### **6. Compress & Self-Sign 'ncat.exe' Binary (WSL)**
 ```shell
-# Compress Binary
+# Compress the compiled binary
 cp nmap/ncat/Release/ncat.exe .
-upx -9 ncat.exe
+upx --best --brute ncat.exe
 
-# Sign Binary
+# Digitall sign the compiled binary
 ./self-signer.sh ncat.exe
 ```
 <img width="1027" height="584" alt="image" src="https://github.com/user-attachments/assets/09e83602-ea96-4fce-8295-24e30ae22672" />
